@@ -62,7 +62,8 @@ def decode(encoded_data, tree):
     return ''.join(decoded_output)
 
 
-data = "ABBBBACBBAAAD"
+#data = "ABBBBACBBAAAD"
+data = "AHMAD"
 tree = build_huffman_tree(data)
 codebook = generate_huffman_codes(tree)
 encoded_data = encode(data, codebook)
