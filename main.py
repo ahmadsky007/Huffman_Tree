@@ -1,6 +1,3 @@
-import heapq
-
-
 class HuffmanNode:
     def __init__(self, char, freq):
         self.char = char
@@ -10,6 +7,21 @@ class HuffmanNode:
 
     def __lt__(self, other):
         return self.freq < other.freq
+
+
+class PriorityQueue:
+    def __init__(self):
+        self.elements = []
+
+    def is_empty(self):
+        return len(self.elements) == 0
+
+    def put(self, item):
+        self.elements.append(item)
+        self.elements.sort(key=lambda x: x.freq)
+
+    def get(self):
+        return self.elements.pop(0)
 
 
 def calculate_frequencies(data):
@@ -24,18 +36,20 @@ def calculate_frequencies(data):
 
 def build_huffman_tree(data):
     frequencies = calculate_frequencies(data)
-    priority_queue = [HuffmanNode(char, freq) for char, freq in frequencies.items()]
-    heapq.heapify(priority_queue)
+    priority_queue = PriorityQueue()
 
-    while len(priority_queue) > 1:
-        left = heapq.heappop(priority_queue)
-        right = heapq.heappop(priority_queue)
+    for char, freq in frequencies.items():
+        priority_queue.put(HuffmanNode(char, freq))
+
+    while len(priority_queue.elements) > 1:
+        left = priority_queue.get()
+        right = priority_queue.get()
         merged = HuffmanNode(None, left.freq + right.freq)
         merged.left = left
         merged.right = right
-        heapq.heappush(priority_queue, merged)
+        priority_queue.put(merged)
 
-    return priority_queue[0] if priority_queue else None
+    return priority_queue.get() if not priority_queue.is_empty() else None
 
 
 def generate_huffman_codes(node, prefix="", codebook={}):
@@ -62,7 +76,7 @@ def decode(encoded_data, tree):
     return ''.join(decoded_output)
 
 
-#data = "ABBBBACBBAAAD"
+# Example usage
 data = "AHMAD"
 tree = build_huffman_tree(data)
 codebook = generate_huffman_codes(tree)
